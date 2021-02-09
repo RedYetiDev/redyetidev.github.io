@@ -1,0 +1,54 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+}
+
+.row {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+.side {
+  -ms-flex: 30%;
+  flex: 30%;
+  background-color: #f1f1f1;
+  padding: 20px;
+}
+
+.main {
+  -ms-flex: 70%;
+  flex: 70%;
+  background-color: white;
+  padding: 20px;
+  text-align: center
+}
+
+.img {
+  background-image: url("https://avatars.githubusercontent.com/u/38299977?u=ec372abc7c7ecc544c62afccfc2b1deebb8e3947");
+  background-repeat: no-repeat;
+  width: 100%;
+  padding: 20px;
+}
+.projects {
+  height:60px;
+  background-color: darkgrey;
+  padding: 20px;
+  text-decoration: underline;
+  color: mediumblue;
+  font-family: 'Trebuchet MS', sans-serif;
+}
+.projects a {
+  cursor:pointer;
+}
+.footer {
+  padding: 20px;
+  text-align: center;
+  background: #ddd;
+}
+/* Media and keyframe */
