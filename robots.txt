@@ -1,1 +1,3 @@
 Sitemap: https://redyetidev.github.io/sitemap.xml
+disallow: https://redyetidev.github.io/comingsoon.*
+disallow: https://redyetidev.github.io/404.*
