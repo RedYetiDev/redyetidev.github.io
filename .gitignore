@@ -1,2 +1,5 @@
 node_modules
 .DS_Store
+Gemfile.lock
+.jekyll-cache
+_site
