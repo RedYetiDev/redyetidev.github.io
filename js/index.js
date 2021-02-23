@@ -6,7 +6,7 @@ window.onload = function() {
   console.log($wordList)
   $.each($wordList, function(idx, elem) {
     //create a span for the letter and set opacity to 0
-    if (idx > 11) {
+    if (idx > 14) {
       var newEL = $("<span/>").text(elem).css({
         opacity: 0,
         color: $(".color").text()
