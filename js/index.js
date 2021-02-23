@@ -44,6 +44,7 @@ window.onload = function() {
       trigger: ".divheader",
       start: "bottom-=300 top",
       end: "bottom-=200 top",
+      scrub: true,
       toggleActions: "restart none reverse none"
     },
     backgroundColor: "white",
