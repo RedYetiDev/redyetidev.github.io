@@ -1,0 +1,283 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+    <title>404 | RedYetiDev</title>
+  </head>
+  <body class="d-flex flex-column justify-content-center align-items-center">
+    <style media="screen">
+      @font-face {
+        font-family: 'SF Mono';
+        font-size: 11;
+        src: url(/assets/fonts/font.otf);
+      }
+      #cursor {
+        display: none;
+        background-color: grey;
+      }
+      * {
+        overflow-y: hidden;
+      }
+      .terminal {
+        overflow-y: scroll;
+      }
+    </style>
+    <script type="text/javascript">
+    var possibleCommands
+    var commandFeedback = false
+    var possibleCommandIndex = 0
+    HTMLCollection.prototype.forEach = Array.prototype.forEach
+    const specialKeys = ["Backspace","CapsLock","Enter","Shift","Tab","Escape","Control","Alt","Meta"]
+    const arrowKeys = ["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"]
+    function keyDown() {
+      if (document.pointerLockElement) {
+        let cursor = $("#cursor")[0]
+        if (commandFeedback && event.key != "Tab" && event.isTrusted) {
+          commandFeedback = false
+          possibleCommandIndex = 0
+          document.querySelectorAll("#commandFeedback").forEach((item) => {
+            item.remove()
+          });
+        }
+        if (!specialKeys.includes(event.key)) {
+          if (!arrowKeys.includes(event.key)) {
+            let letterElement = document.createElement("SPAN");
+            letterElement.innerText = event.key
+            letterElement.id = "typedLetter"
+            cursor.parentNode.insertBefore(letterElement, cursor)
+          }
+        } else if (event.key == "Backspace") {
+          if (cursor.previousElementSibling.id == "typedLetter") {
+            cursor.previousElementSibling.remove()
+          }
+        } else if (event.key == "Enter") {
+          let newcursor = $(cursor)
+          cursor.remove()
+          newcursor.appendTo($("#terminal"))
+          let command = ""
+          document.querySelectorAll("#typedLetter").forEach((item) => {
+            command += item.innerText
+            item.id = "prevTypedLetter"
+          });
+          // Command Processing
+          cursor.parentNode.insertBefore($(`<br id="commandOutput">`)[0], cursor)
+          cursor.parentNode.insertBefore($(`<span id="commandOutput">${processCommand(command)}</span>`)[0], cursor)
+          cursor.parentNode.insertBefore($(`<br id="commandOutput">`)[0], cursor)
+          $("#typeBefore")[0].id = "alreadyTyped"
+          cursor.parentNode.insertBefore($(`<span id="typeBefore">404@RedYetiDev ~ % </span>`)[0], cursor)
+        } else if (event.key == "Tab") {
+          event.preventDefault();
+          let query = ""
+          document.querySelectorAll("#typedLetter").forEach((item) => {
+            query += item.innerText
+          });
+          if (!commandFeedback) {
+            possibleCommands = getPossibleCommands(query)
+            if (possibleCommands.length) {
+              commandFeedback = true
+              $(`<span id="commandFeedback">${possibleCommands.join(" ")}</span>`).insertAfter(cursor)
+              $(`<br id="commandFeedback">`).insertAfter(cursor)
+            }
+          } else if (possibleCommands.length) {
+            let currentCommand = possibleCommands[possibleCommandIndex]
+            if (possibleCommandIndex >= possibleCommands.length) {
+              possibleCommandIndex = 0
+            } else {
+              possibleCommandIndex += 1
+            }
+            document.querySelectorAll("#typedLetter").forEach((item) => {
+              item.remove()
+            });
+            document.querySelectorAll("#commandFeedback").forEach((item) => {
+              item.remove()
+            });
+            for (index in currentCommand) {
+              document.dispatchEvent(new KeyboardEvent('keydown',{'key': currentCommand[index], 'wasAutoClicked': true}));
+            }
+          }
+        }
+      }
+    }
+    var commands = ["help","404","clear",{% for command in page.commands %}"{{ command.name }}".toLowerCase(){% endfor %}]
+    function getPossibleCommands(query) {
+      let localPossibleCommands = []
+      commands.forEach((item) => {
+        if (item.startsWith(query.toLowerCase())) {
+          localPossibleCommands.push(item)
+        }
+      });
+      return localPossibleCommands
+    }
+    function processCommand(command) {
+      if (command.toLowerCase() == "help") {
+        return `
+        404 bash, version 4.0.4
+        <br>
+         404 [404]                            (( 404 ))
+         <br>
+         . 404 [404]                  :
+         <br>
+         [ 404... ]                         [[ 404 ]]
+         <br>
+         404 [-404] [404[=404] ... ]     404 [404 ...]
+         <br>
+         404 [-404] [-404 404] [-404 404 404 [404]
+         <br>
+         404 [404-404 [404 ...]]  404 [404]
+         <br>
+         404 404 404 [404 [| 404]. 404 [-404|-404] [404]
+         <br>
+         404 [-404] 404 [arg ...]   404 [-404] [-404 404
+           <br>
+         404 [-404] [-404] [-404 404 [404]
+         <br>
+         404 [-404] [-404] [404[=404 404 [-404] [+404] [-404]
+         <br>
+         404 [-404] [-404] [404 ...]    404 [-404] [404 ...]
+         <br>
+         404 [-404] [-404] [-404 404]  404 [404 ...]
+         <br>
+         404 [-404] [-404 404] 404 [404 404 [404]
+         <br>
+         404 [-404] [404[=404] ...] 404 404
+         <br>
+         404 [-404 404] [-404] [404] [404 404 [404]
+         <br>
+         404 404 [404 404 ... ;] 404 404 404 (( 404; 404; 404 )); 404 404
+         <br>
+         404 404 { 404 ; } 404 404 404 404 404 [404]
+         <br>
+         404 [-404] [-404 404] [-404] [404 404 [-404] [404 ...]
+         <br>
+         404 [-404] [-404 404] [404] 404 404 404 404; 404 404; [ 404
+           <br>
+         404 [-404] [404 ...] 404 404 404 [-404 404 | -404 404 | -404
+           <br>
+         404 404 [404 ...]                  404 404[=404] ...
+         <br>
+         404                             404 [+404 | -404] [-404]
+         <br>
+         404 [-404 404] 404 [404] 404 [404 | +404 | -404] [-404]
+         <br>
+         404 [-404]                          404 [-404] [-404 404] [-404 404] [
+           <br>
+         404 [-404] [404[=404] ...]  404 [404]
+         <br>
+         404 404 [404 404 ... ;] 404 404 404 [--404] [-404 404
+           <br>
+         404 [404]                          404 [-404] [-404 404] 404
+         <br>
+         404 404 [404]        404 [-404]
+         <br>
+         404 [404]                        404 [-404] 404
+         <br>
+         404                              404 [-404] [404 404 ...]
+         <br>
+         404                               404 [-404] 404 [404 ...]
+         <br>
+         404 [-404] [-404] 404[=404 404 [-404] [404
+           <br>
+         404 [-404] [-404] [404]             404 [-404] 404 [404 ...]
+         <br>
+         404 [-404] [-404] [404 ...]         404 404; 404 404; 404
+         <br>
+         404 - 404 404 404 404 404 [404]
+         <br>
+         404 404; 404 404; 404  { 404 ; }
+         <br>
+         Try the following commands:
+         <br>
+         help
+         <br>
+         404
+         <br>
+         clear
+         {% for command in page.commands %}
+         <br>
+         {{ command.name }}
+         {% endfor %}
+        `
+      } else if (command.toLowerCase() == "clear") {
+        document.querySelectorAll("#prevTypedLetter").forEach((item) => {
+          item.remove()
+        });
+        document.querySelectorAll("#alreadyTyped").forEach((item) => {
+          item.remove()
+        });
+        document.querySelectorAll("#commandOutput").forEach((item) => {
+          item.remove()
+        });
+        return "<br>Console Cleared"
+      } else if (command.toLowerCase() == "404") {
+        document.body.innerHTML = "<h1>404<h1><br><button class='btn btn-primary' onclick='location.href = \"/\"'>Go Home</button>"
+      } else if (command.toLowerCase() == "cd") {
+        return `404: cd *`
+      }
+      {% for command in page.commands %}
+      else if (command.toLowerCase() == "{{ command.name }}".toLowerCase()) {
+        return `
+        {{ command.response | newline_to_br }}
+        `
+      }
+      {% endfor %}
+      else if (command != "") {
+        return `404: Command not found: ${command}`
+      } else {
+        return `404: No command entered`
+      }
+    }
+    function beginTerminal(self) {
+      self.requestPointerLock()
+      document.addEventListener('keydown', keyDown);
+      $("#cursor")[0].style.display = "inline"
+    }
+    window.onload = function() {
+      $("* :color")
+      let modal = new bootstrap.Modal($("#404modal")[0])
+      modal.show()
+      $("#login").text(`Last Login: ${Date().split(" G")[0]} on ttys404`)
+    }
+    function bootSystem() {
+      $("#404modal")[0].remove()
+      $("#terminal").fadeIn()
+    }
+    $.expr[':'].color = function(obj, index, meta, stack){
+      if (obj.tagName.toLowerCase().match(/color-.+/g)) {
+        obj.style.color = obj.tagName.toLowerCase().split("color-")[1]
+        return true
+      } else { return false }
+    };
+    </script>
+    <div class="modal" tabindex="-1" id="404modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Uh Oh! You hit a <color-red>404</color-red></h5>
+          </div>
+          <div class="modal-body text-center">
+            <p>Looks like the page your looking for can't be found!</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="location.href = '/'">Go Home</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="bootSystem()">Boot System</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div onclick="beginTerminal(this)" id="terminal" class="text-nowrap terminal bg-dark text-light rounded-3 shadow-lg" style="font-family: 'SF Mono'; height: 434px; width: 722px; border-color: #636363; display: none;">
+      <div style="width: 722px" class="position-fixed header bg-secondary rounded-top text-center">
+        <span>404 - Page Not Found</span>
+      </div>
+      <br>
+      <span id="login"></span>
+      <br>
+      <span>Just type <span style="color: red">`404`</span> + <span style="color: red">`Enter`</span> ( or <span style="color: red">`Help`</span>)</span>
+      <br id="break">
+      <span id="typeBefore">404@RedYetiDev ~ % </span>
+      <span id="cursor">&#8195;</span>
+    </div>
+  </body>
+</html>
